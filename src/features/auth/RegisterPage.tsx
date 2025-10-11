@@ -20,10 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router";
 import z from "zod";
-import type { ApiError } from "@/features/auth/interfaces";
-import { ErrorType } from "@/features/auth/interfaces";
-import { useAuth } from "@/hooks/useAuth";
-import { register } from "./authService";
+import { useAuth } from "./hooks/useAuth";
 
 const formSchema = z
   .object({
@@ -42,7 +39,6 @@ const formSchema = z
 export type RegisterForm = z.infer<typeof formSchema> & {
   root?: string;
 };
-type FormFields = "email" | "password" | "name" | "root";
 
 const RegisterPage = () => {
   const form = useForm<RegisterForm>({
@@ -53,43 +49,18 @@ const RegisterPage = () => {
     },
   });
 
-  const { setSession } = useAuth();
   const navigate = useNavigate();
-
+  const { registerMutation } = useAuth();
   const location = useLocation();
 
   const onSubmit = async (data: RegisterForm) => {
-    try {
-      const resData = await register(data);
+    const from = location.state?.from?.pathname || "/";
 
-      const from = location.state?.from?.pathname || "/";
-
-      setSession(resData);
-
-      navigate(from, { replace: true });
-    } catch (error: any) {
-      const apiError = error.response?.data as ApiError;
-
-      switch (apiError.errorType) {
-        case ErrorType.Validation:
-        case ErrorType.Auth:
-        case ErrorType.forbidden:
-          apiError.errors.forEach((err) => {
-            const field = (
-              ["email", "password", "name"].includes(err.property)
-                ? err.property
-                : "root"
-            ) as FormFields;
-
-            form.setError(field, { message: err.message });
-          });
-          break;
-        default:
-          form.setError("root", {
-            message: "Something went wrong. Please try again.",
-          });
-      }
-    }
+    registerMutation.mutate(data, {
+      onSuccess: () => {
+        navigate(from, { replace: true });
+      },
+    });
   };
 
   return (

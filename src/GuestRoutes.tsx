@@ -1,12 +1,12 @@
-import { useAuth } from "./hooks/useAuth";
 import { Navigate, Outlet, useLocation } from "react-router";
+import { useAuth } from "./features/auth/hooks/useAuth";
 
 const GuestRoutes = () => {
-  const { state } = useAuth();
+  const { session } = useAuth();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || "/";
-  if (state.accessToken) {
+  if (session.accessToken) {
     return <Navigate to={from} replace />;
   }
 

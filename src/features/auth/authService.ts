@@ -1,7 +1,5 @@
-import { isAxiosError, type AxiosError } from "axios";
 import type { LoginForm } from "./LoginPage";
 import api from "@/lib/api";
-import type { ApiError } from "@/features/auth/interfaces";
 import type { RegisterForm } from "./RegisterPage";
 export const login = async (data: LoginForm) => {
   const { root, ...other } = data;

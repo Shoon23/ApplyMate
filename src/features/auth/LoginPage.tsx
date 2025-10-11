@@ -9,7 +9,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,8 +23,9 @@ import z from "zod";
 import { login } from "./authService";
 import type { ApiError } from "@/features/auth/interfaces";
 import { ErrorType } from "@/features/auth/interfaces";
-import { Label } from "@/components/ui/label";
-import { useAuth } from "@/hooks/useAuth";
+import { mapApiErrorsToForm } from "@/utils/mapApiErrorsToForm";
+import { useAuth } from "./hooks/useAuth";
+
 const formSchema = z.object({
   email: z.email(),
   password: z.string({
@@ -47,40 +47,17 @@ const LoginPage = () => {
     },
   });
 
-  const { setSession } = useAuth();
   const navigate = useNavigate();
 
   const location = useLocation();
+  const { loginMutation } = useAuth(form);
 
   const onSubmit = async (data: LoginForm) => {
-    try {
-      const resData = await login(data);
-      const from = location.state?.from?.pathname || "/";
+    const from = location.state?.from?.pathname || "/";
 
-      setSession(resData);
-      navigate(from, { replace: true });
-    } catch (error: any) {
-      const apiError = error.response?.data as ApiError;
-
-      switch (apiError.errorType) {
-        case ErrorType.Validation:
-        case ErrorType.Auth:
-          apiError.errors.forEach((err) => {
-            const field = (
-              ["email", "password"].includes(err.property)
-                ? err.property
-                : "root"
-            ) as FormFields;
-
-            form.setError(field, { message: err.message });
-          });
-          break;
-        default:
-          form.setError("root", {
-            message: "Something went wrong. Please try again.",
-          });
-      }
-    }
+    loginMutation.mutate(data, {
+      onSuccess: () => navigate(from, { replace: true }),
+    });
   };
 
   return (
