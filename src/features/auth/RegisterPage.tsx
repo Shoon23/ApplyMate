@@ -21,6 +21,8 @@ import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router";
 import z from "zod";
 import { useAuth } from "./hooks/useAuth";
+import { ErrorType, type ApiError } from "./interfaces";
+import { mapApiErrorsToForm } from "@/utils/mapApiErrorsToForm";
 
 const formSchema = z
   .object({
@@ -59,6 +61,23 @@ const RegisterPage = () => {
     registerMutation.mutate(data, {
       onSuccess: () => {
         navigate(from, { replace: true });
+      },
+      onError: (error: any) => {
+        const apiError = error.response?.data as ApiError;
+
+        if (!form) return;
+
+        switch (apiError?.errorType) {
+          case ErrorType.Validation:
+          case ErrorType.Auth:
+          case ErrorType.forbidden:
+            mapApiErrorsToForm(form, apiError);
+            break;
+          default:
+            form.setError("root", {
+              message: "Something went wrong. Please try again.",
+            });
+        }
       },
     });
   };

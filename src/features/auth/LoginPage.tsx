@@ -36,7 +36,6 @@ const formSchema = z.object({
 export type LoginForm = z.infer<typeof formSchema> & {
   root?: string;
 };
-type FormFields = "email" | "password" | "root";
 
 const LoginPage = () => {
   const form = useForm<LoginForm>({
@@ -50,13 +49,29 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const { loginMutation } = useAuth(form);
+  const { loginMutation } = useAuth();
 
   const onSubmit = async (data: LoginForm) => {
     const from = location.state?.from?.pathname || "/";
 
     loginMutation.mutate(data, {
       onSuccess: () => navigate(from, { replace: true }),
+      onError: (error: any) => {
+        const apiError = error.response?.data as ApiError;
+
+        if (!form) return;
+
+        switch (apiError?.errorType) {
+          case ErrorType.Validation:
+          case ErrorType.Auth:
+            mapApiErrorsToForm(form, apiError);
+            break;
+          default:
+            form.setError("root", {
+              message: "Something went wrong. Please try again.",
+            });
+        }
+      },
     });
   };
 

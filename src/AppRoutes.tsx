@@ -7,6 +7,7 @@ import GuestRoutes from "./GuestRoutes";
 import Layout from "./components/layout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { AuthProvider } from "./features/auth/provider/AuthProvider";
 
 const queryClient = new QueryClient();
 
@@ -14,19 +15,21 @@ const AppRoutes = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <Routes>
-          <Route element={<GuestRoutes />}>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-          </Route>
-
-          <Route element={<ProtectedRoutes />}>
-            <Route element={<Layout />}>
-              <Route path="/" element={<JobPage />} />
+        <AuthProvider>
+          <Routes>
+            <Route element={<GuestRoutes />}>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
             </Route>
-          </Route>
-        </Routes>
-        <ReactQueryDevtools initialIsOpen={false} />
+
+            <Route element={<ProtectedRoutes />}>
+              <Route element={<Layout />}>
+                <Route path="/" element={<JobPage />} />
+              </Route>
+            </Route>
+          </Routes>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
   );
