@@ -34,12 +34,12 @@ export function DataTable({
 }: DataTableProps) {
   return (
     <div className="w-full">
-      <div className="m-5 rounded-md border ">
+      <div className="m-3 rounded-md border ">
         <Table>
           <TableHeader className="text-md">
             <TableRow>
               {columns.map((col) => (
-                <TableHead key={col.header as string} className="p-5">
+                <TableHead key={col.header as string} className="p-4">
                   {col.header}
                 </TableHead>
               ))}
@@ -51,7 +51,7 @@ export function DataTable({
               Array.from({ length: 10 }).map((_, i) => (
                 <TableRow key={i}>
                   {columns.map((_, j) => (
-                    <TableCell key={j} className="p-5">
+                    <TableCell key={j} className="p-3">
                       <Skeleton className="h-[20px] w-[100px] rounded-full" />
                     </TableCell>
                   ))}
@@ -61,7 +61,7 @@ export function DataTable({
               jobs.map((job) => (
                 <TableRow key={job.id}>
                   {columns.map((col) => (
-                    <TableCell key={col.header as string} className="p-5">
+                    <TableCell key={col.header as string} className="p-3">
                       {col.render(job)}
                     </TableCell>
                   ))}

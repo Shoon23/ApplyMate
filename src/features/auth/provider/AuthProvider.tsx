@@ -4,7 +4,7 @@ import { useMutation, type UseMutationResult } from "@tanstack/react-query";
 import { login, refresh, register } from "../authService";
 import type { LoginForm } from "../LoginPage";
 import type { RegisterForm } from "../RegisterPage";
-
+import { tokenStore } from "@/lib/tokenStore";
 interface AuthContextType {
   session: AuthState;
   isLoading: boolean;
@@ -34,12 +34,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const loginMutation = useMutation({
     mutationFn: login,
-    onSuccess: setSession,
+    onSuccess: (data) => {
+      setSession(data);
+      tokenStore.set(data.accessToken);
+    },
   });
 
   const registerMutation = useMutation({
     mutationFn: register,
-    onSuccess: setSession,
+    onSuccess: (data) => {
+      setSession(data);
+      tokenStore.set(data.accessToken);
+    },
   });
 
   const refreshMutation = useMutation({
@@ -47,9 +53,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     onSuccess: (data) => {
       setSession(data);
       setIsLoading(false);
+      tokenStore.set(data.accessToken);
     },
     onError: () => {
       setSession({ user: null, accessToken: null });
+      tokenStore.clear();
       setIsLoading(false);
     },
   });
@@ -72,22 +80,3 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     </AuthContext.Provider>
   );
 };
-//   const loginMutation = useMutation({
-//     mutationFn: (data: LoginForm) => login(data),
-//     onSuccess: (resData) => {
-//       setSession(resData);
-//     },
-//     onError: (error: any) => {
-
-//   });
-
-//   /** REGISTER MUTATION */
-//   const registerMutation = useMutation({
-//     mutationFn: (data: RegisterForm) => register(data),
-//     onSuccess: (resData) => {
-//       setSession(resData);
-//     },
-//     onError: (error: any) => {
-
-//     },
-//   });

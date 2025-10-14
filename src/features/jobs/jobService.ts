@@ -1,9 +1,9 @@
 import api from "@/lib/api";
-import type { JobForm } from "./components/add-job-form";
 import type { JobApplication, Meta, StatusType } from "./interfaces";
+import type { JobForm } from "./components/job-form-dialog";
+import type { IUpdateJobForm } from "./components/update-job-form";
 
 export const getJobs = async (
-  token: string,
   pageNumber: number = 1,
   limit: number = 10,
   status?: StatusType | null,
@@ -19,23 +19,18 @@ export const getJobs = async (
 
   if (search) params.append("search", search);
 
-  const res = await api.get(`/jobs?${params.toString()}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await api.get(`/jobs?${params.toString()}`);
 
   return res.data;
 };
-export const addJob = async (
-  token: string,
-  data: JobForm
-): Promise<JobApplication> => {
-  const res = await api.post("/jobs", data, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export const addJob = async (data: JobForm): Promise<JobApplication> => {
+  const res = await api.post("/jobs", data);
+
+  return res.data;
+};
+
+export const updateJob = async (data: IUpdateJobForm) => {
+  const res = await api.patch("/jobs", data);
 
   return res.data;
 };

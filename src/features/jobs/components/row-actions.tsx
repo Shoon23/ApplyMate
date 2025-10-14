@@ -39,6 +39,7 @@ const RowActions = ({ job }: RowActionsProps) => {
 
           <Button
             variant="ghost"
+            color="destructive"
             className="justify-start"
             onClick={() => console.log("Edit", job.id)}
           >

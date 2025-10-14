@@ -5,9 +5,11 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
+import { Textarea } from "@/components/ui/textarea";
 
 const AdditionalInfoSection = () => {
   const { control, formState } = useFormContext();
@@ -15,7 +17,7 @@ const AdditionalInfoSection = () => {
   return (
     <Card className="gap-3">
       <CardHeader>
-        <CardTitle>Core Application Details</CardTitle>
+        <CardTitle>Additonal Information Section</CardTitle>
       </CardHeader>
       <CardContent className="gap-10">
         <FormField
@@ -37,7 +39,7 @@ const AdditionalInfoSection = () => {
             </FormItem>
           )}
         />
-        <div className="flex w-full gap-4 mt-4">
+        <div className="flex w-full gap-4 my-4">
           <FormField
             control={control}
             name="contactName"
@@ -77,6 +79,28 @@ const AdditionalInfoSection = () => {
             )}
           />
         </div>
+
+        <FormField
+          control={control}
+          name="description"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel>Job Description</FormLabel>
+              <FormControl>
+                <Textarea
+                  className="h-32 resize-none"
+                  placeholder="Description"
+                  disabled={formState.isSubmitting}
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                Add Job Description to generate Job Fit Score.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </CardContent>
     </Card>
   );

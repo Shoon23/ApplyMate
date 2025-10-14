@@ -19,8 +19,7 @@ export const useJobsQuery = (options?: {
 
   const { data, isLoading, isFetching, refetch } = useQuery({
     queryKey: ["jobs", page, search, status],
-    queryFn: async () =>
-      getJobs(session.accessToken!, page, initialLimit, status, search),
+    queryFn: async () => getJobs(page, initialLimit, status),
     enabled: !!session.accessToken && enabled,
     staleTime: 1000 * 60 * 10,
   });

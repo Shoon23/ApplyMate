@@ -9,13 +9,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import AddJobForm from "./components/add-job-form";
 import { Status, type StatusType } from "./interfaces";
 import { Button } from "@/components/ui/button";
 import { useJobsQuery } from "./hooks/useJobsQuery";
 import { DebouncedInput } from "@/components/debounced-input";
-
+import JobFormDialog from "./components/job-form-dialog";
+import { useJobMutation } from "./hooks/useJobMutation";
 const JobPage = () => {
   const {
     handleFilter,
@@ -32,8 +31,11 @@ const JobPage = () => {
     initialLimit: 10,
     enabled: true,
   });
+
+  const { addJobMutation, isAdding } = useJobMutation();
+
   return (
-    <div className="mx-5">
+    <div className="mx-3">
       <header className="pb-3 flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
         <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
           <h1 className="text-2xl font-medium">Job Applications</h1>
@@ -82,8 +84,13 @@ const JobPage = () => {
             </Button>
           )}
         </div>
-
-        <AddJobForm />
+        <JobFormDialog
+          mode="create"
+          onSubmit={async (data) => {
+            await addJobMutation.mutateAsync(data);
+          }}
+          isSubmitting={isAdding}
+        />
       </div>
       <DataTable
         columns={columns}

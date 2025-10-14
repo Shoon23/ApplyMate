@@ -9,9 +9,9 @@ export interface JobApplication {
   position: string | null;
   salary: number | null;
   source: string | null;
-  status: string | null;
+  status: StatusType;
   updatedAt: Date;
-  userId: string | null;
+  userId: string;
   appliedDate: string;
 }
 

@@ -8,9 +8,10 @@ import Layout from "./components/layout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AuthProvider } from "./features/auth/provider/AuthProvider";
-
+import { test } from "./lib/test";
 const queryClient = new QueryClient();
 
+test();
 const AppRoutes = () => {
   return (
     <QueryClientProvider client={queryClient}>
