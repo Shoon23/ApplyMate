@@ -3,6 +3,7 @@ import { useJobMutation } from "../hooks/useJobMutation";
 import type { JobApplication } from "../interfaces";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
+import { useState } from "react";
 
 export interface IUpdateJobForm extends JobForm {
   id: string;
@@ -10,13 +11,17 @@ export interface IUpdateJobForm extends JobForm {
 
 interface UpdateJobFormProps {
   job: JobApplication;
+  open: boolean;
+  setOpen: (value: boolean) => void;
 }
 
-const UpdateJobForm = ({ job }: UpdateJobFormProps) => {
+const UpdateJobForm = ({ job, open, setOpen }: UpdateJobFormProps) => {
   const { updateJobMutation } = useJobMutation();
 
   return (
     <JobFormDialog
+      open={open}
+      setOpen={setOpen}
       mode="update"
       initialValues={{
         company: job.company ?? undefined,
@@ -38,17 +43,6 @@ const UpdateJobForm = ({ job }: UpdateJobFormProps) => {
         await updateJobMutation.mutateAsync({ ...data, id: job.id });
       }}
       isSubmitting={updateJobMutation.isPending}
-      trigger={
-        <Button
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          size="sm"
-          className="flex justify-center items-center bg-accent-foreground hover:bg-accent-foreground/90"
-        >
-          <Pencil /> Edit
-        </Button>
-      }
     />
   );
 };

@@ -1,7 +1,8 @@
-import { format, parseISO, isValid } from "date-fns";
+import { formatDate, formatSalary } from "@/lib/format";
 import type { JobApplication } from "../interfaces";
-import RowActions from "./row-actions";
+
 import UpdateJobForm from "./update-job-form";
+import { getStatusColor } from "@/lib/utils";
 
 export const columns: {
   header: string;
@@ -17,30 +18,23 @@ export const columns: {
   },
   {
     header: "Status",
-    render: (job) => job.status ?? "N/A",
+    render: (job) => {
+      const statusColor = getStatusColor(job.status);
+      return (
+        <span className={`${statusColor} p-2 rounded-md`}>
+          {job.status ?? "N/A"}{" "}
+        </span>
+      );
+    },
   },
   {
     header: "Salary",
-    render: (job) =>
-      job.salary
-        ? new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "PHP",
-          }).format(Number(job.salary))
-        : "N/A",
+    render: (job) => formatSalary(job.salary),
   },
   {
     header: "Applied Date",
     render: (job) => {
-      if (!job.appliedDate) return "N/A";
-      const date = parseISO(job.appliedDate);
-      return isValid(date) ? format(date, "PPP") : "N/A";
-    },
-  },
-  {
-    header: "Actions",
-    render: (job) => {
-      return <UpdateJobForm job={job} />;
+      return formatDate(job.appliedDate);
     },
   },
 ];

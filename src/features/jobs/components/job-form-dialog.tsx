@@ -6,6 +6,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogOverlay,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -31,7 +32,7 @@ import TimelineStatusSection from "./timeline-status-section";
 import AdditionalInfoSection from "./additional-info-section";
 import { mapApiErrorsToForm } from "@/utils/mapApiErrorsToForm";
 import { ErrorType, type ApiError } from "@/features/auth/interfaces";
-import { Status, type JobApplication } from "../interfaces";
+import { Status } from "../interfaces";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const formSchema = z.object({
@@ -51,24 +52,25 @@ export type JobForm = z.infer<typeof formSchema>;
 
 interface JobFormDialogProps {
   mode: "create" | "update";
-  trigger?: React.ReactNode;
   initialValues?: Partial<JobForm>;
   onSubmit: (data: JobForm) => Promise<void> | void;
   isSubmitting?: boolean;
   title?: string;
   description?: string;
+  open: boolean;
+  setOpen: (value: boolean) => void;
 }
 
 const JobFormDialog = ({
   mode,
-  trigger,
   initialValues,
   onSubmit,
   isSubmitting = false,
   title,
   description,
+  open,
+  setOpen,
 }: JobFormDialogProps) => {
-  const [open, setOpen] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
 
   const form = useForm<JobForm>({
@@ -122,7 +124,6 @@ const JobFormDialog = ({
     } catch (error: any) {
       const apiError = error.response?.data as ApiError;
 
-      console.log(apiError);
       switch (apiError?.errorType) {
         case ErrorType.Validation:
           mapApiErrorsToForm(form, apiError);
@@ -143,15 +144,8 @@ const JobFormDialog = ({
 
   return (
     <>
-      <Dialog open={open} onOpenChange={handleDialogChange}>
-        <DialogTrigger asChild>
-          {trigger || (
-            <Button size="lg">
-              {mode === "create" ? "+ Add Job" : "Edit Job"}
-            </Button>
-          )}
-        </DialogTrigger>
-
+      <Dialog open={open} onOpenChange={handleDialogChange} modal={true}>
+        <DialogOverlay />
         <DialogContent className="w-full lg:max-w-5xl">
           <DialogHeader>
             <DialogTitle>

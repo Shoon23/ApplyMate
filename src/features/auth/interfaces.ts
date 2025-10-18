@@ -2,6 +2,8 @@ export const ErrorType = {
   Validation: "VALIDATION_ERROR",
   Auth: "AUTH_ERROR",
   forbidden: "FORBIDDEN_ERROR",
+  NotFound: "NOT_FOUND",
+  LLMExtraction: "LLM_EXTRACTION_ERROR",
 } as const;
 
 type ApiErrorType = (typeof ErrorType)[keyof typeof ErrorType];

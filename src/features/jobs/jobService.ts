@@ -1,5 +1,10 @@
 import api from "@/lib/api";
-import type { JobApplication, Meta, StatusType } from "./interfaces";
+import type {
+  JobApplication,
+  JobEvaluation,
+  Meta,
+  StatusType,
+} from "./interfaces";
 import type { JobForm } from "./components/job-form-dialog";
 import type { IUpdateJobForm } from "./components/update-job-form";
 
@@ -31,6 +36,12 @@ export const addJob = async (data: JobForm): Promise<JobApplication> => {
 
 export const updateJob = async (data: IUpdateJobForm) => {
   const res = await api.patch("/jobs", data);
+
+  return res.data;
+};
+
+export const createFitScore = async (id: string): Promise<JobEvaluation> => {
+  const res = await api.post("/jobs/fitScore", { id });
 
   return res.data;
 };

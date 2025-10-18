@@ -7,12 +7,18 @@ export interface JobApplication {
   deadline: string | null;
   description: string | null;
   position: string | null;
-  salary: number | null;
+  salary: number;
   source: string | null;
   status: StatusType;
   updatedAt: Date;
   userId: string;
   appliedDate: string;
+  jobEvaluation?: JobEvaluation | null;
+}
+
+export interface JobEvaluation {
+  fitScore: number;
+  explanation: string[];
 }
 
 export interface Meta {

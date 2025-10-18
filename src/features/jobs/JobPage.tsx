@@ -15,7 +15,10 @@ import { useJobsQuery } from "./hooks/useJobsQuery";
 import { DebouncedInput } from "@/components/debounced-input";
 import JobFormDialog from "./components/job-form-dialog";
 import { useJobMutation } from "./hooks/useJobMutation";
+import { useState } from "react";
 const JobPage = () => {
+  const [open, setOpen] = useState(false);
+
   const {
     handleFilter,
     status,
@@ -23,12 +26,9 @@ const JobPage = () => {
     resetFilter,
     handleNext,
     handlePrev,
-    isLoading,
-    jobs,
-    meta,
     page,
+    jobQuery,
   } = useJobsQuery({
-    initialLimit: 10,
     enabled: true,
   });
 
@@ -84,7 +84,18 @@ const JobPage = () => {
             </Button>
           )}
         </div>
+
+        <Button
+          size="lg"
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          Add Job
+        </Button>
         <JobFormDialog
+          open={open}
+          setOpen={setOpen}
           mode="create"
           onSubmit={async (data) => {
             await addJobMutation.mutateAsync(data);
@@ -94,11 +105,9 @@ const JobPage = () => {
       </div>
       <DataTable
         columns={columns}
+        jobQuery={jobQuery}
         handleNext={handleNext}
         handlePrev={handlePrev}
-        isLoading={isLoading}
-        jobs={jobs}
-        meta={meta}
         page={page}
       />
     </div>

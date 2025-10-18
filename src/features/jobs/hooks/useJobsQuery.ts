@@ -17,15 +17,14 @@ export const useJobsQuery = (options?: {
 
   const { session } = useAuth();
 
-  const { data, isLoading, isFetching, refetch } = useQuery({
+  const jobQuery = useQuery({
     queryKey: ["jobs", page, search, status],
-    queryFn: async () => getJobs(page, initialLimit, status),
+    queryFn: async () => getJobs(page, initialLimit, status, search),
     enabled: !!session.accessToken && enabled,
     staleTime: 1000 * 60 * 10,
   });
 
-  const jobs = data?.data ?? [];
-  const meta = data?.meta ?? null;
+  const meta = jobQuery.data?.meta ?? null;
 
   const handleNext = () => {
     if (meta?.hasNextPage) setPage((prev) => prev + 1);
@@ -34,19 +33,17 @@ export const useJobsQuery = (options?: {
     if (meta?.hasPrevPage && page > 1) setPage((prev) => prev - 1);
   };
 
-  const isPageLoading = isLoading || (isFetching && !data);
-
   const handleFilter = (options: {
     search?: string;
     status?: StatusType;
     resetPage?: boolean;
   }) => {
     const { search: newSearch, status: newStatus, resetPage = true } = options;
+
     if (resetPage) setPage(1);
     if (newSearch) setSearch(newSearch);
     if (newStatus) setStatus(newStatus);
   };
-
   const resetFilter = () => {
     setPage(1);
     setSearch(null);
@@ -54,15 +51,12 @@ export const useJobsQuery = (options?: {
   };
 
   return {
-    jobs,
-    meta,
     page,
-    isLoading: isPageLoading,
     handleNext,
     handlePrev,
     setStatus,
     setSearch,
-    refetch,
+    jobQuery,
     handleFilter,
     resetFilter,
     status: status ?? "",
