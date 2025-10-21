@@ -10,7 +10,6 @@ import {
 
 import { type JobApplication, type Meta } from "../interfaces";
 import TableLoader from "./table-loader";
-import { useJobsQuery } from "../hooks/useJobsQuery";
 import TableError from "./table-error";
 import { JobDetailsDialog } from "./job-detail-dialog";
 import { useState } from "react";

@@ -33,12 +33,12 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 const items = [
   {
     title: "Dashboard",
-    url: "#",
+    url: "/",
     icon: LayoutDashboard,
   },
   {
     title: "Job Applications",
-    url: "/",
+    url: "/jobs",
     icon: FileUser,
   },
 ];

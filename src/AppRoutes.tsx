@@ -8,6 +8,7 @@ import Layout from "./components/layout";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AuthProvider } from "./features/auth/provider/AuthProvider";
+import DashboarPage from "./features/dashboard/DashboarPage";
 const queryClient = new QueryClient();
 
 const AppRoutes = () => {
@@ -23,7 +24,8 @@ const AppRoutes = () => {
 
             <Route element={<ProtectedRoutes />}>
               <Route element={<Layout />}>
-                <Route path="/" element={<JobPage />} />
+                <Route path="/jobs" element={<JobPage />} />
+                <Route path="/" element={<DashboarPage />} />
               </Route>
             </Route>
           </Routes>
